@@ -7,7 +7,7 @@
 </head>
 <body>
 	<h1>Login to CabsOnline</h1>
-	<form method="post" action="processLogin.php>
+	<form method="post" action="processLogin.php">
 		<p>
 			<label for="email">Email:</label>
 			<input type="email" id="email" name="email" required="required" placeholder="e.g. joe@example.com"/>
