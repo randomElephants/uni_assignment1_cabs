@@ -8,7 +8,7 @@
 <body>
 	<h1>Register at CabsOnline</h1>
 	<p>Please fill out the fields below to complete your registration</p>
-	<form>
+	<form method="post" action="processRegister.php">
 		<p>
 			<label for="name">Name:</label>
 			<input type="text" id="name" name="name" required="required" placeholder="e.g. John Doe"/>

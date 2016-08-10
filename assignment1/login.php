@@ -7,10 +7,10 @@
 </head>
 <body>
 	<h1>Login to CabsOnline</h1>
-	<form action="post">
+	<form method="post" action="processLogin.php>
 		<p>
 			<label for="email">Email:</label>
-			<input type="email" id="email" value="email" required="required" placeholder="e.g. joe@example.com"/>
+			<input type="email" id="email" name="email" required="required" placeholder="e.g. joe@example.com"/>
 		</p>
 		<p>
 			<label for="password">Password:</label>
