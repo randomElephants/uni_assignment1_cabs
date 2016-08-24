@@ -1,36 +1,80 @@
 <?php
-class MySQLDatabase {
-	private $mysqliDB;
+//TODO: add the error handling
+//TODO: extract inventoru-specific functionality
+//TODO: add fuller comments
+//TODO: dependency injection?
+class MySQLDatabase {	
+	private $mysqli;
 	
-	private $dbName;
-	private $host;
+	private $dbHost;
 	private $username;
 	private $password;
+	private $dbName;
 	
-	function __construct($username, $password, $dbName, $host) {
-		$this->dbName = $dbName;
-		$this->host = $host;
+	public function __construct($host, $username, $password, $dbName) {
+		
+		$this->dbHost = $host;
+		$this->username = $username;
 		$this->password = $password;
-		$this->username = $username;		
+		$this->dbName = $dbName;
 		
 		$this->connect();
 	}
 	
-	function connect() {
-		if (empty($this->host)) {
-			throw new Exception('MySQL host is not set');
-		}
-		$this->_mysqli = new mysqli($this->host, $this->username, $this->password, $this->db, $this->port);
-		if ($this->_mysqli->connect_error) {
-			throw new Exception('Connect Error ' . $this->_mysqli->connect_errno . ': ' . $this->_mysqli->connect_error, $this->_mysqli->connect_errno);
+	private function connect() {
+		if (empty($this->dbHost)) {
+			throw new Exception('No host set.');
 		}
 		
-		function getMysqli() {
-			return $this->mysqliDB;
+		$this->mysqli = new mysqli($this->dbHost, $this->username, $this->password, $this->dbName);
+		
+		if ($this->mysqli->connect_error) {
+			echo "Connect error:" . $this->_mysqli->connect_errno . ": " . $this->_mysqli->connect_error;
+			throw new Exception("Connect Error " . $this->_mysqli->connect_errno . ": " . $this->_mysqli->connect_error);
 		}
 	}
 	
+	public function testQuery($query) {
+		$result = $this->mysqli->query($query);
+		return $result;
+	}
 	
+	//Will fail if "Inventory" table doesn't exist yet
+	public function searchInventoryByMake($make) {
+		$stmt = $this->mysqli->prepare("SELECT make, model, price, quantity FROM inventory where make=?");
+		$stmt->bind_param("s", $make);
+		return $this->getResult($stmt);
+	}	
 	
+	//Will fail if "Inventory" table doesn't exist yet
+	public function getAllFromInventory() {
+		$stmt = $this->mysqli->prepare("SELECT make, model, price, quantity FROM inventory");
+		return $this->getResult($stmt);
+	}
 	
+	public function getMakes() {
+		$stmt = $this->mysqli->prepare("SELECT DISTINCT make FROM inventory");
+		return $this->getResult($stmt);
+	}
+	
+	public function insertInventoryEntry($make, $model, $price, $quantity) {
+		$stmt = $this->mysqli->prepare("INSERT INTO inventory (make, model, price, quantity) VALUES (?, ?, ?, ?)");
+ 		if ($stmt) {
+			$stmt->bind_param("ssdi", $make, $model, $price, $quantity);
+			return $stmt->execute();		
+ 			
+ 		} else {
+ 			echo "Could't prepare.";
+ 		}
+	}
+	
+	private function getResult($stmt) {
+		require_once('MySQLResult.php');
+		
+		$stmt->execute();
+		$result = new MySQLResult($stmt);	
+		
+		return $result;
+	}
+//Bracket to close class
 }
