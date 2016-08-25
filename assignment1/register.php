@@ -11,23 +11,23 @@
 	<form method="post" action="processRegister.php">
 		<p>
 			<label for="name">Name:</label>
-			<input type="text" id="name" name="name" required="required" placeholder="e.g. John Doe"/>
+			<input type="text" id="name" name="name" placeholder="e.g. John Doe"/>
 		</p>
 		<p>
 			<label for="password">Password:</label>
-			<input type="password" id="password" name="password" required="required"/>
+			<input type="password" id="password" name="password"/>
 		</p>
 		<p>
 			<label for="confirmPassword">Confirm Password:</label>
-			<input type="password" id="confirmPassword" name="confirmPassword" required="required"/>
+			<input type="password" id="confirmPassword" name="confirmPassword"/>
 		</p>
 		<p>
 			<label for="email">Email:</label>
-			<input type="email" id="email" name="email" required="required" placeholder="e.g. John@example.com"/>
+			<input type="text" id="email" name="email" placeholder="e.g. John@example.com"/>
 		</p>
 		<p>
 			<label for="phone">Contact phone:</label>
-			<input type="tel" id="phone" name="phone" required="required"/>
+			<input type="text" id="phone" name="phone"/>
 		</p>
 		<p>
 			<input type="submit" value="Register Now"/>
