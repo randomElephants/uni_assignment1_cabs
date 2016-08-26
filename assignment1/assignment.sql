@@ -15,8 +15,7 @@ CREATE TABLE IF NOT EXISTS `cabsCustomer` (
   `name` VARCHAR(255) NOT NULL,
   `password` VARCHAR(255) NOT NULL,
   `phone_number` VARCHAR(20) NOT NULL,
-  PRIMARY KEY (`email_address`))
-ENGINE = InnoDB;
+  PRIMARY KEY (`email_address`));
 
 -- -----------------------------------------------------
 -- Table `cabsSuburb`
@@ -26,9 +25,7 @@ CREATE TABLE IF NOT EXISTS `cabsSuburb` (
   `name` VARCHAR(45) NOT NULL,
   `postcode` VARCHAR(45) NOT NULL,
   `is_eligible` TINYINT(1) NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
-
+  PRIMARY KEY (`id`));
 
 -- -----------------------------------------------------
 -- Table `cabsAddress`
@@ -47,8 +44,7 @@ CREATE TABLE IF NOT EXISTS `cabsAddress` (
   CONSTRAINT `fk_address_customer`
     FOREIGN KEY (`customer`)
     REFERENCES `cabsCustomer` (`email_address`)
-)
-ENGINE = InnoDB;
+);
 
 -- -----------------------------------------------------
 -- Table `cabsBooking`
@@ -72,7 +68,5 @@ CREATE TABLE IF NOT EXISTS `cabsBooking` (
     REFERENCES `cabsCustomer` (`email_address`),
   CONSTRAINT `fk_booking_address1`
     FOREIGN KEY (`address_id`)
-    REFERENCES `cabs`.`address` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    REFERENCES `cabsAddress` (`id`));
 
