@@ -1,3 +1,7 @@
+<?php 
+	require_once 'Customer.php';
+	session_start();
+?>
 <!DOCTYPE html>
 <html>
 <head>

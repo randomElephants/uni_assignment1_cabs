@@ -1,35 +1,19 @@
 <?php
+session_start();
 require_once("Validator.php");
+require_once("CustomerFactory.php");
+require_once("MySQLDatabase.php");
+require_once("settings.php");
 
-if (registrationIsValid()) {
-	//header("location:booking.php");
-	echo "Valid!";
+$validator = new Validator();
+$db = new MySQLDatabase($host, $username, $password, $database);
+$factory = new CustomerFactory($db);
+
+if ($validator->registrationIsValid()) {
+	$_SESSION['customer'] = $factory->getCustomer();
+	header("location:booking.php");
 } else {
-	echo "Invalid!";
 	//redirect back to previous page
-	//header("location:register.php");
+	header("location:register.php");
 }
 
-function registrationIsValid() {
-	$validator = new Validator();
-	$valid = false;
-	
-	if ((isset($_POST['email'])) && 
-			(isset($_POST['name'])) && 
-			(isset($_POST['phone']) &&
-			(isset($_POST['password'])))) {
-		$email = trim($_POST['email']);
-		$name = trim($_POST['name']);
-		$phone = trim($_POST['phone']);
-		$password = $_POST['password'];
-		
-		if (($validator->isValidName($name)) && 
-				($validator->isValidEmailFormat($email)) && 
-				($validator->isValidPhone($phone)) &&
-				($validator->isValidPassword($password))) {
-			$valid = true;
-		}		
-	}
-	
-	return $valid;
-}
