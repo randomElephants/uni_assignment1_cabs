@@ -1,4 +1,8 @@
 <?php 
+<<<<<<< HEAD
+=======
+	require_once 'Customer.php';
+>>>>>>> branch 'master' of https://github.com/randomElephants/uni_assignment1_cabs
 	session_start();
 ?>
 <!DOCTYPE html>
