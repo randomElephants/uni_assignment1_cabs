@@ -1,18 +1,11 @@
 <?php
 session_start();
 require_once("Validator.php");
-<<<<<<< HEAD
 require_once 'CustomerFactory.php';
 require_once 'Customer.php';
 require_once 'MySQLDatabase.php';
 require_once 'settings.php';
-=======
-require_once("CustomerFactory.php");
-require_once("MySQLDatabase.php");
-require_once("settings.php");
->>>>>>> branch 'master' of https://github.com/randomElephants/uni_assignment1_cabs
 
-<<<<<<< HEAD
 if ((isset($_POST['email'])) &&
 		(isset($_POST['name'])) &&
 		(isset($_POST['phone'])) &&
@@ -33,21 +26,12 @@ if (registrationIsValid($email, $name, $phone, $password, $confirm)) {
 		die ("<p>customer is null!<p>");
 	}
 	$_SESSION['customer'] = $customer;
-=======
-$validator = new Validator();
-$db = new MySQLDatabase($host, $username, $password, $database);
-$factory = new CustomerFactory($db);
-
-if ($validator->registrationIsValid()) {
-	$_SESSION['customer'] = $factory->getCustomer();
->>>>>>> branch 'master' of https://github.com/randomElephants/uni_assignment1_cabs
 	header("location:booking.php");
 } else {
 	//redirect back to previous page
 	header("location:register.php");
 }
 
-<<<<<<< HEAD
 function registrationIsValid($email, $name, $phone, $password, $confirm) {
 	$validator = new Validator();
 	$valid = false;
@@ -62,5 +46,3 @@ function registrationIsValid($email, $name, $phone, $password, $confirm) {
 	
 	return $valid;
 }
-=======
->>>>>>> branch 'master' of https://github.com/randomElephants/uni_assignment1_cabs

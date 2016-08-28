@@ -5,10 +5,6 @@ class Customer {
 	//Wouldn't really do password like this obviously
 	private $password;
 	
-<<<<<<< HEAD
-=======
-	
->>>>>>> branch 'master' of https://github.com/randomElephants/uni_assignment1_cabs
 	//retrieved from db
 	private $phone;
 	private $name;
