@@ -1,9 +1,6 @@
 <?php
-<<<<<<< HEAD
 require_once 'Customer.php';
 
-=======
->>>>>>> branch 'master' of https://github.com/randomElephants/uni_assignment1_cabs
 session_start();
 	if (isset($_SESSION['customer'])) {
 		$customer = $_SESSION['customer'];
@@ -24,13 +21,9 @@ session_start();
 	
 	<?php 
 		if ($customer !== NULL) {
-<<<<<<< HEAD
 			$name = $customer->getName();
 			$email =$customer->getEmail();
 			echo "<p>Customer: $name, $email</p>";
-=======
-			echo "<p>Customer: $customer->getName, $customer->getEmail</p>";
->>>>>>> branch 'master' of https://github.com/randomElephants/uni_assignment1_cabs
 		} else {
 			echo "<p>No customer!!</p>";
 		}
