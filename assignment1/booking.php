@@ -1,3 +1,13 @@
+<?php
+require_once 'Customer.php';
+
+session_start();
+	if (isset($_SESSION['customer'])) {
+		$customer = $_SESSION['customer'];
+	} else {
+		die("customer not set");
+	}
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,6 +18,16 @@
 <body>
 	<h1>Booking a cab</h1>
 	<p>Please fill out the fields below to book a taxi.</p>
+	
+	<?php 
+		if ($customer !== NULL) {
+			$name = $customer->getName();
+			$email =$customer->getEmail();
+			echo "<p>Customer: $name, $email</p>";
+		} else {
+			echo "<p>No customer!!</p>";
+		}
+	?>
 	
 	<form method="post" action="processBooking.php">
 		<p>

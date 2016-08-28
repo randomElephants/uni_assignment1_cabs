@@ -2,7 +2,7 @@
 require_once 'settings.php';
 require_once 'MySQLDatabase.php';
 
-$db = new MySQLDatabase($username, $password, $database, $host);
+$db = new MySQLDatabase($databaseHost, $databaseUsername, $databasePassword, $databaseName);
 
 if (loginIsValid($db)) {
 	header("location:booking.php");
@@ -18,17 +18,20 @@ function loginIsValid() {
 	else {
 		return false;
 	}
-	
 }
 
 function loginFormIsValid() {
-	return true;
-}
-
-function userPasswordCorrect($db) {
-	$db = $db;
-	if (true) {
-		return true;
+	$valid = false;
+	$validator = new Validator();
+	
+	if (isset($_POST['email']) && isset($_POST['password'])) {
+		$email = $_POST['email'];
+		$password = $_POST['password'];
+		
+		if ($validator->isValidEmailFormat($email) && $validator->isValidPassword($pw)) {
+			return true;
+		}
 	}
+	
+	return $valid;
 }
-

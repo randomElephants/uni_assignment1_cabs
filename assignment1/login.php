@@ -10,11 +10,11 @@
 	<form method="post" action="processLogin.php">
 		<p>
 			<label for="email">Email:</label>
-			<input type="email" id="email" name="email" required="required" placeholder="e.g. joe@example.com"/>
+			<input type="text" id="email" name="email" placeholder="e.g. joe@example.com"/>
 		</p>
 		<p>
 			<label for="password">Password:</label>
-			<input type="password" id="password" name="password" required="required"/>
+			<input type="password" id="password" name="password"/>
 		</p>
 		<p>
 			<input type="submit" value="Log in"/>

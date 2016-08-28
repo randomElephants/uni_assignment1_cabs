@@ -11,12 +11,12 @@ class MySQLDatabase {
 	private $password;
 	private $dbName;
 	
-	public function __construct($host, $username, $password, $dbName) {
+	public function __construct($databaseHost, $databaseUsername, $databasePassword, $databaseName) {
 		
-		$this->dbHost = $host;
-		$this->username = $username;
-		$this->password = $password;
-		$this->dbName = $dbName;
+		$this->dbHost = $databaseHost;
+		$this->username = $databaseUsername;
+		$this->password = $databasePassword;
+		$this->dbName = $databaseName;
 		
 		$this->connect();
 	}
@@ -33,39 +33,49 @@ class MySQLDatabase {
 			throw new Exception("Connect Error " . $this->_mysqli->connect_errno . ": " . $this->_mysqli->connect_error);
 		}
 	}
+
+	//TODO: add error checking
+	//TODO: move specific stuff somewhere else?
+	public function findCustomer($email) {
+		echo "<p>Entered find customer</p>";
+		$stmt = $this->mysqli->prepare("SELECT email_address, name, password, phone_number FROM cabsCustomer WHERE email_address = ?");
+		if ($stmt) {
+			echo "<p>Statement worked!</p>";
+			$stmt->bind_param("s", $email);
+			return $this->getResult($stmt);			
+		} else {
+			echo "<p>Statement didn't work!!</p>";
+			$this->reportMysqliErrorToWebpage();
+		}
+
+	}		
 	
-	public function testQuery($query) {
-		$result = $this->mysqli->query($query);
-		return $result;
+	private function reportMysqliErrorToWebpage() {
+		$error = $this->mysqli->errno . " : " . $this->mysqli->error;
+		echo "<p>MySQLi error: $error</p>";
 	}
 	
-	//Will fail if "Inventory" table doesn't exist yet
-	public function searchInventoryByMake($make) {
-		$stmt = $this->mysqli->prepare("SELECT make, model, price, quantity FROM inventory where make=?");
-		$stmt->bind_param("s", $make);
-		return $this->getResult($stmt);
-	}	
-	
-	//Will fail if "Inventory" table doesn't exist yet
-	public function getAllFromInventory() {
-		$stmt = $this->mysqli->prepare("SELECT make, model, price, quantity FROM inventory");
-		return $this->getResult($stmt);
-	}
-	
-	public function getMakes() {
-		$stmt = $this->mysqli->prepare("SELECT DISTINCT make FROM inventory");
-		return $this->getResult($stmt);
-	}
-	
-	public function insertInventoryEntry($make, $model, $price, $quantity) {
-		$stmt = $this->mysqli->prepare("INSERT INTO inventory (make, model, price, quantity) VALUES (?, ?, ?, ?)");
- 		if ($stmt) {
-			$stmt->bind_param("ssdi", $make, $model, $price, $quantity);
-			return $stmt->execute();		
- 			
- 		} else {
- 			echo "Could't prepare.";
- 		}
+	public function insertNewCustomer($email, $name, $pw, $phone) {
+		$stmt = $this->mysqli->prepare("INSERT INTO cabsCustomer(email_address, name, password, phone_number) VALUES (?, ?, ?, ?)");
+		
+		if ($stmt) {
+			if ($stmt->bind_param("ssss", $email, $name, $pw, $phone)){
+				if ($stmt->execute()) {
+					return true;
+				} else {
+					echo "<p>Statement didn't execute!</p>";
+					$error = $stmt->error;
+					echo "<p>Error: $error";
+					return false;
+				}
+			} else {
+				echo "<p>Couldn't bind params</p>";
+				$this->reportMysqliErrorToWebpage();
+			}
+		} else {
+			echo "<p>Statement didn't prepare!</p>";
+			$this->reportMysqliErrorToWebpage();
+		}
 	}
 	
 	private function getResult($stmt) {

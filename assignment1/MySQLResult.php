@@ -8,7 +8,9 @@ class MySQLResult {
 	
 	//Takes a mysqli_stmt class, turns into readable result set
 	public function __construct($stmt) {
+		$stmt->store_result();
 		$this->numFields = $stmt->field_count;
+		$this->rowCount = $stmt->num_rows;
 		$meta = $stmt->result_metadata();
 		$params = array();
 		
@@ -38,6 +40,14 @@ class MySQLResult {
 	}
 	
 	public function getFieldCount() {
-		return $numFields;
+		return $this->numFields;
+	}
+	
+	public function getRowCount() {
+		return $this->rowCount;
+	}
+	
+	public function getFirstRow() {
+		return $this->rows[0];
 	}
 }

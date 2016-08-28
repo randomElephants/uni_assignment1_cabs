@@ -30,13 +30,21 @@ public function isValidPhone($number) {
 }
 
 //making up a password rule: must be longer than 8 characters
-//Placeholder for possibly more complex funcitons
+//Placeholder for possibly more complex functions
 public function isValidPassword($pw) {
 	if (preg_match($this->validPassword, $pw)) {
 		return true;
 	} else {
-		die("Not valid password!");
 		return false;
 	}
 }
+
+public function isPasswordConfirmMatch($pw, $confirm) {
+	if ($pw === $confirm) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 }
