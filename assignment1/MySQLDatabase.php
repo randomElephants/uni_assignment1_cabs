@@ -33,6 +33,11 @@ class MySQLDatabase {
 			throw new Exception("Connect Error " . $this->_mysqli->connect_errno . ": " . $this->_mysqli->connect_error);
 		}
 	}
+	
+	//TODO: clause for time 
+	function listAllBookings() {
+		$stmt = $this->mysqli->prepare("SELECT b.reference_number, c.name, b.passenger_name, b.passenger_phone, b.unit_number, b.street_number, b.street_name, b.pickup_suburb, b.dest_suburb, b.pickup_datetime FROM cabsCustomer c INNER JOIN cabsBooking b ON c.email_address = b.customer WHERE (b.status = 'UNASSIGNED') AND (b.pickup_datetime <= (now()+ INTERVAL 2 HOUR)) AND (b.pickup_datetime >= now())");
+	}
 
 	function insertNewBooking($email, $passName, $passPhone, $destSub, $pickupDatetime, 
 								$unitNo, $streetNo, $streetName, $pickupSub) {
