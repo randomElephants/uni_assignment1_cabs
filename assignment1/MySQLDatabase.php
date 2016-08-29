@@ -34,21 +34,47 @@ class MySQLDatabase {
 		}
 	}
 
+	function insertNewBooking($email, $passName, $passPhone, $destSub, $pickupDatetime, 
+								$unitNo, $streetNo, $streetName, $pickupSub) {
+		//reference number, status & placement time, have defaults set
+		$stmt = $this->mysqli->prepare("INSERT INTO cabsBooking (customer, passenger_name, passenger_phone, dest_suburb, pickup_datetime, unit_number, street_number, street_name, pickup_suburb) VALUES (?,?,?,?,?,?,?,?,?)");
+		if ($stmt) {
+			$insertDatetime = $pickupDatetime->format("Y-m-d H-i-s");
+			if ($stmt->bind_param('sssssssss', $email, $passName, $passPhone, $destSub, $insertDatetime, 
+											$unitNo, $streetNo, $streetName, $pickupSub)) {
+				$stmt->execute();
+				
+				if ($stmt->affected_rows == 1) {
+					return $stmt->insert_id;
+				} else if ($stmt->affected_rows < 1) {
+					die ("No booking inserted!");
+				} else if ($stmt->affected_rows > 1) {
+					die ("Too many bookings found!");
+				}
+				
+			} else {
+				die("Couldn't bind params, insert booking.");
+			}
+		} else {
+			$this->reportMysqliErrorToWebpage();
+			die("Couldn't prepare insert booking");
+		}
+		
+	}
+	
 	//TODO: add error checking
 	//TODO: move specific stuff somewhere else?
 	public function findCustomer($email) {
-		echo "<p>Entered find customer</p>";
 		$stmt = $this->mysqli->prepare("SELECT email_address, name, password, phone_number FROM cabsCustomer WHERE email_address = ?");
 		if ($stmt) {
-			echo "<p>Statement worked!</p>";
 			$stmt->bind_param("s", $email);
 			return $this->getResult($stmt);			
 		} else {
-			echo "<p>Statement didn't work!!</p>";
 			$this->reportMysqliErrorToWebpage();
+			die("Not working!");
 		}
 
-	}		
+	}
 	
 	private function reportMysqliErrorToWebpage() {
 		$error = $this->mysqli->errno . " : " . $this->mysqli->error;

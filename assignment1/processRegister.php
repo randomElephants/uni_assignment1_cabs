@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 require_once("Validator.php");
 require_once 'CustomerFactory.php';
 require_once 'Customer.php';
@@ -11,38 +12,30 @@ if ((isset($_POST['email'])) &&
 		(isset($_POST['phone'])) &&
 		(isset($_POST['password'])) &&
 		(isset($_POST['confirmPassword']))) {
-			$email = trim($_POST['email']);
-			$name = trim($_POST['name']);
-			$phone = trim($_POST['phone']);
-			$password = $_POST['password'];
-			$confirm = $_POST['confirmPassword'];
-		}
+	$email = trim($_POST['email']);
+	$name = trim($_POST['name']);
+	$phone = trim($_POST['phone']);
+	$password = $_POST['password'];
+	$confirm = $_POST['confirmPassword'];
+		
+		
+	$validator = new Validator();
 
-if (registrationIsValid($email, $name, $phone, $password, $confirm)) {
-	$db = new MySQLDatabase($databaseHost, $databaseUsername, $databasePassword, $databaseName);
-	$factory = new CustomerFactory($db);
-	$customer = $factory->registerNewCustomer($email, $password, $name, $phone);
-	if (!$customer) {
-		die ("<p>customer is null!<p>");
+	if ($validator->registrationFormIsValid($email, $name, $phone, $password, $confirm)) {
+		$db = new MySQLDatabase($databaseHost, $databaseUsername, $databasePassword, $databaseName);
+		$factory = new CustomerFactory($db);
+		$customer = $factory->registerNewCustomer($email, $password, $name, $phone);
+		if (!$customer) {
+			die ("<p>customer is null!<p>");
+		}
+		$_SESSION['customer'] = $customer;
+		header("location:booking.php");
+	} else {
+		//redirect back to previous page
+		header("location:register.php");
 	}
-	$_SESSION['customer'] = $customer;
-	header("location:booking.php");
 } else {
-	//redirect back to previous page
+	//Here by accident, back to registration form!
 	header("location:register.php");
 }
-
-function registrationIsValid($email, $name, $phone, $password, $confirm) {
-	$validator = new Validator();
-	$valid = false;
-		
-		if (($validator->isValidName($name)) && 
-				($validator->isValidEmailFormat($email)) && 
-				($validator->isValidPhone($phone)) &&
-				($validator->isValidPassword($password)) &&
-				($validator->isPasswordConfirmMatch($password, $confirm))) {
-			$valid = true;
-		}		
 	
-	return $valid;
-}

@@ -6,21 +6,16 @@ require_once 'MySQLResult.php';
 require_once 'settings.php';
 require_once 'CustomerFactory.php';
 require_once 'Customer.php';
+require_once 'BookingFactory.php';
+require_once 'Validator.php';
 
 echo "<p>Top of page</p>";
 $db = new MySQLDatabase($databaseHost, $databaseUsername, $databasePassword, $databaseName);
 echo "<p>DB created</p>";
-$factory = new CustomerFactory($db);
-echo "<p>Factory created</p>";
-$email = "email";
-$customer = $factory->getCustomer($email);
-if ($customer) {
-	echo "<p>Found customer!<p>";
-	$string = "Email: " . $customer->getEmail() . " Name: " . $customer->getName();
-	echo "<p>$string</p>";
-} else {
-	echo "<p>Couldn't get customer!<p>";
-}
-
+$validator = new Validator();
+echo "<p>Validator created</p>";
+$date = "12 Feb 2017";
+$time = "1ghiokj";
+$validator->isValidPickupDatetime($date, $time);
 
 echo "<p>Bottom of page</p>";

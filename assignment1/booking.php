@@ -2,6 +2,7 @@
 require_once 'Customer.php';
 
 session_start();
+
 	if (isset($_SESSION['customer'])) {
 		$customer = $_SESSION['customer'];
 	} else {
@@ -17,60 +18,56 @@ session_start();
 </head>
 <body>
 	<h1>Booking a cab</h1>
-	<p>Please fill out the fields below to book a taxi.</p>
 	
 	<?php 
 		if ($customer !== NULL) {
 			$name = $customer->getName();
 			$email =$customer->getEmail();
-			echo "<p>Customer: $name, $email</p>";
+			$phone = $customer->getPhone();
+			echo "<p>Welcome $name ($email)</p>";
 		} else {
-			echo "<p>No customer!!</p>";
+			die("<p>No customer!!</p>");
 		}
 	?>
+	
+	<p>Please fill out the fields below to book a taxi.</p>
 	
 	<form method="post" action="processBooking.php">
 		<p>
 			<label for="pName">Passenger Name:</label>
-			<input type="text" name="pName" id="pName" required="required"/>
+			<input type="text" name="pName" id="pName" value="<?php echo "$name";?>"/>
 		</p>
 		<p>
 			<label for="pPhone">Passenger contact phone:</label>
-			<input type="tel" name="pPhone" id="pPhone" required="required" pattern="[0-9]*" title="Numerical only"/>
+			<input type="text" name="pPhone" id="pPhone" title="Numerical only" value="<?php echo "$phone";?>"/>
 		</p>
 		<fieldset>
 			<legend>Pickup Address</legend>
 			<p>
 				<label for="unit">Unit number (optional)</label>
-				<input type="text" id="unit" name="unit" size="6" pattern="[0-9]{1,5}"/>
+				<input type="text" id="unit" name="unit" size="6"/>
 			</p>
 			<p>
 				<label for="street">Street address:</label>
-				<input type="text" id="streetNo" name="streetNo" required="required" pattern="[0-9]{1,6}" size="6"/>
-				<input type="text" id="street" name="street" required="required" pattern="[a-zA-Z]*"/>
+				<input type="text" id="streetNo" name="streetNo" size="4"/>
+				<input type="text" id="street" name="street"/>
 			</p>
 			<p>
 			<label for="pickupSuburb">Pickup suburb:</label>
-			<select name="pickupSuburb" id="pickupSuburb" required="required">
-				<option value="">Please select</option>
-				<option value="Box Hill">Box Hill</option>
-			</select>
+			<input type="text" name="pickupSuburb" id="pickupSuburb"/>
 			</p>
 		</fieldset>
 		<p>
 			<label for="destSuburb">Destination suburb:</label>
-			<select name="destSuburb" id="destSuburb" required="required">
-				<option value="">Please select</option>
-				<option value="Box Hill">Box Hill</option>
-			</select>
+			<input type="text" id="destSuburb" name="destSuburb"/>
 		</p>
 		<p>
 			<label for="date">Pickup date:</label>
-			<input id="date" name="date" type="date" required="required"/>
+			<input id="date" name="date" type="date"/>
 		</p>
 		<p>
 			<label for="time">Pickup time:</label>
-			<input type="time" name="time" id="time" required="required"/>
+			<input type="time" name="time" id="time"/>
 		</p>
 		<p>
 			<input type="submit" value="Book"/>
