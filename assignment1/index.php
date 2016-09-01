@@ -12,10 +12,27 @@ require_once 'Validator.php';
 echo "<p>Top of page</p>";
 $db = new MySQLDatabase($databaseHost, $databaseUsername, $databasePassword, $databaseName);
 echo "<p>DB created</p>";
-$validator = new Validator();
-echo "<p>Validator created</p>";
-$date = "12 Feb 2017";
-$time = "1ghiokj";
-$validator->isValidPickupDatetime($date, $time);
+$results = $db->listAllBookings();
+
+print_result_table($results);
 
 echo "<p>Bottom of page</p>";
+
+function print_result_table(MySQLResult $result) {
+	echo "<table border='1'>";
+	echo "<thead><tr>";
+	foreach ($result->getFieldNames() as $field) {
+		echo "<th>$field</th>";
+	}
+	echo "</tr></thead>";
+	echo "<tbody>";
+	foreach ($result->getRows() as $row) {
+		echo "<tr>";
+		foreach ($row as $field) {
+			echo "<td>$field</td>";
+		}
+		echo "</tr>";
+	}
+	echo "</tbody>";
+	echo "</table>";
+}

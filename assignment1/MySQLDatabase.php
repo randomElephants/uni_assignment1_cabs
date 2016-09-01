@@ -34,9 +34,17 @@ class MySQLDatabase {
 		}
 	}
 	
-	//TODO: clause for time 
+	//TODO: Error checking 
 	function listAllBookings() {
 		$stmt = $this->mysqli->prepare("SELECT b.reference_number, c.name, b.passenger_name, b.passenger_phone, b.unit_number, b.street_number, b.street_name, b.pickup_suburb, b.dest_suburb, b.pickup_datetime FROM cabsCustomer c INNER JOIN cabsBooking b ON c.email_address = b.customer WHERE (b.status = 'UNASSIGNED') AND (b.pickup_datetime <= (now()+ INTERVAL 2 HOUR)) AND (b.pickup_datetime >= now())");
+		
+		if ($stmt) {
+			$stmt->execute();
+			return $this->getResult($stmt);
+		} else {
+			die ("Couldn't prepare stmt, listallbookings");
+		}
+ 		
 	}
 
 	function insertNewBooking($email, $passName, $passPhone, $destSub, $pickupDatetime, 
