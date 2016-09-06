@@ -11,20 +11,22 @@ session_start();
 if (isset($_POST['email']) && isset($_POST['password'])) {
 	$email = $_POST['email'];
 	$password = $_POST['password'];
-	
+			
 	$db = new MySQLDatabase($databaseHost, $databaseUsername, $databasePassword, $databaseName);
 	$validator = new Validator();
 	
 	//TODO: password checking logic!!?
 	if (($validator->loginFormIsValid($email, $password)) && (isEnteredCorrectPassword($email, $password, $db))) {
-		header("location:booking.php");
+		unset($_SESSION['error']);
+		header("location:booking");
 	} else {
-		header("location:login.php");
+		$_SESSION['error'] = "Your login is invalid, please try again!";
+		header("location:login");
 	}	
 
 } else {
 	//Here by accident: go back to login!
-	header("location:login.php");
+	header("location:login");
 }
 
 //TODO: gracefully handle non-existent customer on login\

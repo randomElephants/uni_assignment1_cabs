@@ -1,25 +1,12 @@
 <?php
 require_once 'Customer.php';
 
-session_start();
-
 	if (isset($_SESSION['customer'])) {
 		$customer = $_SESSION['customer'];
 	} else {
 		die("customer not set");
 	}
-?>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="author" content="Claire O'Donoghue"/>
-<title>CabsOnline - Booking</title>
-</head>
-<body>
-	<h1>Booking a cab</h1>
-	
-	<?php 
+
 		if ($customer !== NULL) {
 			$name = $customer->getName();
 			$email =$customer->getEmail();
@@ -32,7 +19,7 @@ session_start();
 	
 	<p>Please fill out the fields below to book a taxi.</p>
 	
-	<form method="post" action="processBooking.php">
+	<form method="post" action="process?booking">
 		<p>
 			<label for="pName">Passenger Name:</label>
 			<input type="text" name="pName" id="pName" value="<?php echo "$name";?>"/>
@@ -73,6 +60,3 @@ session_start();
 			<input type="submit" value="Book"/>
 		</p>
 	</form>
-	
-</body>
-</html>

@@ -5,8 +5,6 @@ require_once 'MySQLDatabase.php';
 require_once 'settings.php';
 require_once 'Customer.php';
 
-session_start();
-
 if ((isset($_POST['pName'])) && (isset($_POST['pPhone'])) && (isset($_POST['unit'])) && 
 		(isset($_POST['streetNo'])) && (isset($_POST['street'])) && (isset($_POST['pickupSuburb'])) &&
 		(isset($_POST['destSuburb'])) && (isset($_POST['date'])) && (isset($_POST['time']))
@@ -34,11 +32,13 @@ if ((isset($_POST['pName'])) && (isset($_POST['pPhone'])) && (isset($_POST['unit
 		$_SESSION['bookingID'] = $bookingID;
 		$_SESSION['pickupTime'] = $pickupTime;
 		$_SESSION['pickupDate'] = $pickupDate;		
-// 		sendConfirmMail($customerEmailID, $customerName, $bookingID, $pickupDate, $pickupTime);
-		header("location:confirmation.php");
+ 		sendConfirmMail($customerEmailId, $customerName, $bookingID, $pickupDate, $pickupTime);
+ 		unset($_SESSION['error']);
+		header("location:confirmation");
 	} else {
 		//redirect back to previous page
-		header("location:booking.php");
+		$_SESSION['error'] = "Booking for is not right!";
+		header("location:booking");
 	}
 }
 

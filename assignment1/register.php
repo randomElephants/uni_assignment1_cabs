@@ -1,17 +1,5 @@
-<?php 
-	session_start();
-?>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="author" content="Claire O'Donoghue"/>
-<title>CabsOnline - Register</title>
-</head>
-<body>
-	<h1>Register at CabsOnline</h1>
 	<p>Please fill out the fields below to complete your registration</p>
-	<form method="post" action="processRegister.php">
+	<form method="post" action="process?register">
 		<p>
 			<label for="name">Name:</label>
 			<input type="text" id="name" name="name" placeholder="e.g. John Doe"/>
@@ -36,6 +24,4 @@
 			<input type="submit" value="Register Now"/>
 		</p>
 	</form>
-	<p>Already a member? <a href="login.php" title="CabsOnline Login">Login here</a></p>
-</body>
-</html>
+	<p>Already a member? <a href="login" title="CabsOnline Login">Login here</a></p>

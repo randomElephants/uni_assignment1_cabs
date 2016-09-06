@@ -51,6 +51,7 @@ public function bookingFormIsValid($passName, $passPhone, $destSub, $pickupDate,
 // 				($this->isValidNumber($unitNo) || ($unitNo === NULL) || ($unitNo === "")) &&
 // 				$this->isValidNumber($streetNo) && $this->isValidAlpha($streetName));
 	
+	//TODO: check this, make work!
 	return $valid;
 	
 }

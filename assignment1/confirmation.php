@@ -20,17 +20,6 @@
 		header("location: login.php");
 	}
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="author" content="Claire O'Donoghue"/>
-<title>CabsOnline - Booking Confirmation</title>
-</head>
-<body>
-	<h1>Booking confirmed</h1>
 	<p>Thanks, <?php echo $name;?>.</p>
 	<p>Your booking reference number is <?php echo $bookingID;?>. We will pick up the passengers in front of your provided address at <?php echo $pickupTime;?> on <?php echo $pickupDate;?>.</p>
-	<p> A conformation email will also be sent to you at <?php echo $email;?></p>
-</body>
-</html>
+	<p> A confirmation email will also be sent to you at <?php echo $email;?></p>

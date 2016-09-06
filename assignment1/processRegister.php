@@ -29,13 +29,15 @@ if ((isset($_POST['email'])) &&
 			die ("<p>customer is null!<p>");
 		}
 		$_SESSION['customer'] = $customer;
-		header("location:booking.php");
+		unset($_SESSION['error']);
+		header("location:booking");
 	} else {
 		//redirect back to previous page
-		header("location:register.php");
+		$_SESSION['error'] = "Your registration form is invalid!";
+		header("location:register");
 	}
 } else {
 	//Here by accident, back to registration form!
-	header("location:register.php");
+	header("location:register");
 }
 	
