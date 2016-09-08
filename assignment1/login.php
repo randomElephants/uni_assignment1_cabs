@@ -1,4 +1,4 @@
-<form method="post" action="process?login">
+<form method="post" action="login?process">
 	<p>
 		<label for="email">Email:</label>
 		<input type="text" id="email" name="email" placeholder="e.g. joe@example.com"/>

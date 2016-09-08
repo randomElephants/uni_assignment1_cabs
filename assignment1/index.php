@@ -13,7 +13,8 @@ session_start();
 
 $db = new MySQLDatabase($databaseHost, $databaseUsername, $databasePassword, $databaseName);
 $validator = new Validator();
-$controller = new Controller($db, $validator);
+$cFactory = new CustomerFactory($db);
+$controller = new Controller($db, $validator, $cFactory);
 
 if (isset($_SERVER['PATH_INFO'])) {
 	$pageRequested = $_SERVER['PATH_INFO'];
@@ -33,23 +34,6 @@ if (isset($_SERVER['PATH_INFO'])) {
 			break;
 		case "/booking":
 			$controller->bookingPage();
-			break;
-		case "/process":
-			if (isset($_SERVER['QUERY_STRING'])) {
-				$query = $_SERVER['QUERY_STRING'];
-				
-				switch ($query) {
-					case "login":
-						require 'processLogin.php';
-						break;
-					case "register":
-						require "processRegister.php";
-						break;
-					case "booking":
-						require 'processBooking.php';
-						break;
-				}
-			}
 			break;
 		default:
 			header('HTTP/1.1 404 Not Found');

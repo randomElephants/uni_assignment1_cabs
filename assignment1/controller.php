@@ -12,6 +12,18 @@ class Controller {
 		$content = "login.php";
 		$heading = "Login to CabsOnline";
 		$pageTitle = "Login to CabsOnline";
+		
+		if(isset($_SERVER['QUERY_STRING'])) {
+			$query = $_SERVER['QUERY_STRING'];
+			
+			switch ($query) {
+				case "process":
+					$this->processLogin();
+				default:
+					break;
+			}
+		}
+		
 		require "template.php";
 	}
 	
@@ -43,21 +55,21 @@ class Controller {
 		
 		if(isset($_SERVER['QUERY_STRING'])) {
 			$query = $_SERVER['QUERY_STRING'];
-		}
-		
-		switch ($query) {
-			case "list-all":
-				$result = $this->db->listAllBookings();
-				break;
-			case "update":
-				if (isset($_POST['refNumber'])) {
-					$refNumber = $_POST['refNumber'];
-					$updateResult = $this->adminUpdateBooking($refNumber);
-				}
-				$result = $this->db->listAllBookings();
-				break;
-			default:
-				break;
+			
+			switch ($query) {
+				case "list-all":
+					$result = $this->db->listAllBookings();
+					break;
+				case "update":
+					if (isset($_POST['refNumber'])) {
+						$refNumber = $_POST['refNumber'];
+						$updateResult = $this->adminUpdateBooking($refNumber);
+					}
+					$result = $this->db->listAllBookings();
+					break;
+				default:
+					break;
+			}
 		}
 		
 		require 'template.php';
@@ -78,6 +90,32 @@ class Controller {
 			}
 		} else {
 			$_SESSION['error'] = "Please enter a valid number to try and update";
+		}
+	}
+	
+	private function processLogin() {
+		if (isset($_POST['email']) && isset($_POST['password'])) {
+			$email = $_POST['email'];
+			$password = $_POST['password'];
+						
+			if ($this->validator->loginFormIsValid($email, $password)) {
+				
+				$customerResult = $this->db->findCustomer($email);
+				
+				if ($customerResult->getRowCount() == 1) {
+					$customer = $customerResult->getFirstRow();
+					$correctPassword=$customer['password'];
+					if ($correctPassword === $password) {
+						header("location:booking");		
+					} else {
+						$_SESSION['error'] = "(Wrong password) You have entered the wrong email or password. Please check your typing.";
+					}
+				} else {
+					$_SESSION['error'] = "(Customer not found) You have entered the wrong email or password. Please check your typing.";
+				}
+			} else {
+				$_SESSION['error'] = "Please check you have filled out the form correctly.";
+			}
 		}
 	}
 }
