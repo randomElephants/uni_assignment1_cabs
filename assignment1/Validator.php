@@ -22,7 +22,7 @@ public function registrationFormIsValid($email, $name, $phone, $password, $confi
 			($this->isValidEmailFormat($email)) &&
 			($this->isValidPhone($phone)) &&
 			($this->isValidPassword($password)) &&
-			($this->isPasswordConfirmMatch($password, $confirm))) {
+			($this->isValidPassword($confirm))) {
 				$valid = true;
 			}
 
@@ -100,7 +100,7 @@ private function isValidPassword($pw) {
 	}
 }
 
-private function isPasswordConfirmMatch($pw, $confirm) {
+public function isPasswordConfirmMatch($pw, $confirm) {
 	if ($pw === $confirm) {
 		return true;
 	} else {

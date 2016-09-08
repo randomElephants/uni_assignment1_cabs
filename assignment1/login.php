@@ -1,7 +1,7 @@
 <form method="post" action="login?process">
 	<p>
 		<label for="email">Email:</label>
-		<input type="text" id="email" name="email" placeholder="e.g. joe@example.com"/>
+		<input type="text" id="email" name="email" placeholder="e.g. joe@example.com" <?php if (isset($email)) {echo "value='$email'";}?>/>
 	</p>
 	<p>
 		<label for="password">Password:</label>

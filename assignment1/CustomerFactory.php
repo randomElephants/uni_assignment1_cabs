@@ -10,22 +10,17 @@ class CustomerFactory {
 		$this->db = $db;
 	}
 	
-	//TODO: this function is in progress
-	public function registerNewCustomer($email, $password, $name, $phone) {
+	public function registerNewCustomer($email, $name, $password, $phone) {
 		
 		if (!($this->doesCustomerExist($email))) {
 			$result = $this->db->insertNewCustomer($email, $name, $password, $phone);
 			if ($result) {
-				$customer = $this->getCustomer($email);
-				if ($customer) {
-					return $customer;
-				} else {
-					die("<p>Error in reg cust: customer null when getting!</p>");
-				}
+				return true;
+			} else {
+				return false;
 			}
 		} else {
-			die ("<p>Error: Trying to create a customer that already exists!</p>");
-			return false;
+			$_SESSION['error'] = "A customer with that email address is already registered. Try logging in!";
 		}
 	}
 	
@@ -33,19 +28,19 @@ class CustomerFactory {
 		$customerResult = $this->searchDBForCustomer($email);
 		
 		if ($customerResult->getRowCount() < 1) {
-			die("<p>Error: Customer not found</p>");
+			$_SESSION['error'] ="(0 Customer) Sorry, something went wrong!";
 			return false;
 		} else if ($customerResult->getRowCount() > 1) {
-			die("<p>Error: More than 1 customer found!<p>");
+			$_SESSION['error'] ="(more than 1 Customer) Sorry, something went wrong!";
 			return false;
 		} else {
 			//make customer object
 			$row = $customerResult->getFirstRow();
-			$email = $row['email_address'];
-			$name = $row['name'];
-			$phone = $row['phone_number'];
-			$pw = $row['password'];
-			$customer = new Customer($email, $pw, $phone, $name);
+			$customer = array();
+			$customer['email'] = $row['email_address'];
+			$customer['name'] = $row['name'];
+			$customer['phone'] = $row['phone_number'];
+			$customer['pw'] = $row['password'];
 			return $customer;
 		}
 	}

@@ -1,8 +1,8 @@
 	<p>Please fill out the fields below to complete your registration</p>
-	<form method="post" action="process?register">
+	<form method="post" action="register?process">
 		<p>
 			<label for="name">Name:</label>
-			<input type="text" id="name" name="name" placeholder="e.g. John Doe"/>
+			<input type="text" id="name" name="name" placeholder="e.g. John Doe" <?php if (isset($custName)) {echo "value='$custName'";}?>/>
 		</p>
 		<p>
 			<label for="password">Password:</label>
@@ -14,11 +14,11 @@
 		</p>
 		<p>
 			<label for="email">Email:</label>
-			<input type="text" id="email" name="email" placeholder="e.g. John@example.com"/>
+			<input type="text" id="email" name="email" placeholder="e.g. John@example.com" <?php if (isset($custEmail)) {echo "value='$custEmail'";}?>/>
 		</p>
 		<p>
 			<label for="phone">Contact phone:</label>
-			<input type="text" id="phone" name="phone"/>
+			<input type="text" id="phone" name="phone" <?php if (isset($custPhone)) {echo "value='$custPhone'";}?>/>
 		</p>
 		<p>
 			<input type="submit" value="Register Now"/>

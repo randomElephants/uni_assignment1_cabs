@@ -107,12 +107,15 @@ class MySQLDatabase {
 			die ( "Not working!" );
 		}
 	}
+	
 	private function reportMysqliErrorToWebpage() {
 		$error = $this->mysqli->errno . " : " . $this->mysqli->error;
 		echo "<p>MySQLi error: $error</p>";
 	}
+	
+	//TODO: tidy error messages!
 	public function insertNewCustomer($email, $name, $pw, $phone) {
-		$stmt = $this->mysqli->prepare ( "INSERT INTO cabsCustomer(email_address, name, password, phone_number) VALUES (?, ?, ?, ?)" );
+		$stmt = $this->mysqli->prepare ("INSERT INTO cabsCustomer(email_address, name, password, phone_number) VALUES (?, ?, ?, ?)" );
 		
 		if ($stmt) {
 			if ($stmt->bind_param ( "ssss", $email, $name, $pw, $phone )) {
@@ -133,6 +136,7 @@ class MySQLDatabase {
 			$this->reportMysqliErrorToWebpage ();
 		}
 	}
+	
 	private function getResult($stmt) {
 		require_once ('MySQLResult.php');
 		

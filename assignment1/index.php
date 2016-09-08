@@ -3,7 +3,6 @@ require_once 'MySQLDatabase.php';
 require_once 'MySQLResult.php';
 require_once 'settings.php';
 require_once 'CustomerFactory.php';
-require_once 'Customer.php';
 require_once 'BookingFactory.php';
 require_once 'Validator.php';
 require_once 'controller.php';
