@@ -34,5 +34,6 @@
 		<hr/>
 		<p>View the <a href="admin" title ="Admin page">admin page</a></p>
 		<p>Go back to <a href="login" title ="Login page">login page</a></p>
+		<p><a href='logout' title="Logout">Logout</a></p>
     </body>
 </html>

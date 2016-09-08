@@ -1,23 +1,22 @@
-<?php 
-	require_once 'Customer.php';
-		
+<?php 		
 	if (isset($_SESSION['customer'])) {
-		$customer = $_SESSION['customer'];
-		$name = $customer->getName();
-		$email = $customer->getEmail();
+ 		$customer = $_SESSION['customer'];
+ 		$name = $customer['name'];
+ 		$email = $customer['email'];
 		
-		if (isset($_SESSION['bookingID']) && isset($_SESSION['pickupTime']) && isset($_SESSION['pickupDate'])) {
-			$bookingID= $_SESSION['bookingID'];
-			$pickupTime = $_SESSION['pickupTime'];
-			$pickupDate = $_SESSION['pickupDate'];
-		} else {
-			//TODO: ?Error?
-			header("location:booking.php");
-		}
-	} else {
-		//shouldn't be here
-		header("location: login.php");
-	}
+ 		if (isset($_SESSION['bookingID']) && isset($_SESSION['pickupTime']) && isset($_SESSION['pickupDate'])) {
+ 			$bookingID= $_SESSION['bookingID'];
+ 			$pickupTime = $_SESSION['pickupTime'];
+ 			$pickupDate = $_SESSION['pickupDate'];
+ 		} else {
+ 			//TODO: ?Error?
+ 			header("location:booking");
+ 		}
+		
+ 	} else {
+ 		//shouldn't be here
+ 		header("location:login");
+ 	}
 ?>
 	<p>Thanks, <?php echo $name;?>.</p>
 	<p>Your booking reference number is <?php echo $bookingID;?>. We will pick up the passengers in front of your provided address at <?php echo $pickupTime;?> on <?php echo $pickupDate;?>.</p>

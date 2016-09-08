@@ -1,62 +1,54 @@
-<?php
-require_once 'Customer.php';
-
+<?php 
 	if (isset($_SESSION['customer'])) {
 		$customer = $_SESSION['customer'];
-	} else {
-		die("customer not set");
+		$name = $customer['name'];
+		$email = $customer['email'];
+		$phone = $customer['phone'];
+		
+		echo "<p>Welcome, $name ($email)</p>";
 	}
+?>
 
-		if ($customer !== NULL) {
-			$name = $customer->getName();
-			$email =$customer->getEmail();
-			$phone = $customer->getPhone();
-			echo "<p>Welcome $name ($email)</p>";
-		} else {
-			die("<p>No customer!!</p>");
-		}
-	?>
-	
-	<p>Please fill out the fields below to book a taxi.</p>
-	
-	<form method="post" action="process?booking">
+<p>Please fill out the fields below to book a taxi.</p>
+
+<form method="post" action="booking?process">
+	<p>
+		<label for="pName">Passenger Name:</label>
+		<input type="text" name="pName" id="pName" value="<?php if(isset($name)) {echo "$name";}?>"/>
+	</p>
+	<p>
+		<label for="pPhone">Passenger contact phone:</label>
+		<input type="text" name="pPhone" id="pPhone" title="Numerical only" value="<?php if (isset($phone)) {echo "$phone";}?>"/>
+	</p>
+	<fieldset>
+		<legend>Pickup Address</legend>
 		<p>
-			<label for="pName">Passenger Name:</label>
-			<input type="text" name="pName" id="pName" value="<?php echo "$name";?>"/>
+			<label for="unit">Unit number (optional)</label>
+			<input type="text" id="unit" name="unit" size="6" value="<?php if(isset($unit)) {echo "$unit";}?>"/>
 		</p>
 		<p>
-			<label for="pPhone">Passenger contact phone:</label>
-			<input type="text" name="pPhone" id="pPhone" title="Numerical only" value="<?php echo "$phone";?>"/>
-		</p>
-		<fieldset>
-			<legend>Pickup Address</legend>
-			<p>
-				<label for="unit">Unit number (optional)</label>
-				<input type="text" id="unit" name="unit" size="6"/>
-			</p>
-			<p>
-				<label for="street">Street address:</label>
-				<input type="text" id="streetNo" name="streetNo" size="4"/>
-				<input type="text" id="street" name="street"/>
-			</p>
-			<p>
-			<label for="pickupSuburb">Pickup suburb:</label>
-			<input type="text" name="pickupSuburb" id="pickupSuburb"/>
-			</p>
-		</fieldset>
-		<p>
-			<label for="destSuburb">Destination suburb:</label>
-			<input type="text" id="destSuburb" name="destSuburb"/>
+			<label for="street">Street address:</label>
+			<input type="text" id="streetNo" name="streetNo" size="4" value="<?php if(isset($streetNo)) {echo "$streetNo";}?>"/>
+			<input type="text" id="street" name="street" value="<?php if(isset($street)) {echo "$street";}?>"/>
 		</p>
 		<p>
-			<label for="date">Pickup date:</label>
-			<input id="date" name="date" type="date"/>
+		<label for="pickupSuburb">Pickup suburb:</label>
+		<input type="text" name="pickupSuburb" id="pickupSuburb" value="<?php if(isset($pickupSub)) {echo "$pickupSub";}?>"/>
 		</p>
-		<p>
-			<label for="time">Pickup time:</label>
-			<input type="time" name="time" id="time"/>
-		</p>
-		<p>
-			<input type="submit" value="Book"/>
-		</p>
-	</form>
+	</fieldset>
+	<p>
+		<label for="destSuburb">Destination suburb:</label>
+		<input type="text" id="destSuburb" name="destSuburb" value="<?php if(isset($destSuburb)) {echo "$destSuburb";}?>"/>
+	</p>
+	<p>
+		<label for="date">Pickup date:</label>
+		<input id="date" name="date" type="date" value="<?php if(isset($pickupDate)) {echo "$pickupDate";}?>"/>
+	</p>
+	<p>
+		<label for="time">Pickup time:</label>
+		<input type="time" name="time" id="time" value="<?php if(isset($pickupTime)) {echo "$pickupTime";}?>"/>
+	</p>
+	<p>
+		<input type="submit" value="Book"/>
+	</p>
+</form>

@@ -3,11 +3,13 @@ class Controller {
 	private $db;
 	private $validator;
 	private $customerFactory;
+	private $bookingFactory;
 	
 	public function __construct(MySQLDatabase $db, $validator) {
 		$this->db = $db;
 		$this->validator = $validator;
 		$this->customerFactory = new CustomerFactory($db);
+		$this->bookingFactory = new BookingFactory($db);
 	}
 	
 	public function loginPage() {
@@ -21,6 +23,7 @@ class Controller {
 			switch ($query) {
 				case "process":
 					$this->processLogin();
+					break;
 				default:
 					break;
 			}
@@ -50,6 +53,7 @@ class Controller {
 			switch ($query) {
 				case "process":
 					$this->processRegistration();
+					break;
 				default:
 					break;
 			}
@@ -59,9 +63,46 @@ class Controller {
 	}
 	
 	public function bookingPage() {
+		
+		if (!isset($_SESSION['customer'])) {
+			header('location:login');
+		}
+		
 		$content = "booking.php";
 		$heading = "Booking a cab";
 		$pageTitle = "Book with CabsOnline";
+		
+		if(isset($_SERVER['QUERY_STRING'])) {
+			$query = $_SERVER['QUERY_STRING'];
+		
+			switch ($query) {
+				case "process":
+					if ((isset($_POST['pName'])) && (isset($_POST['pPhone'])) && (isset($_POST['unit'])) &&
+							(isset($_POST['streetNo'])) && (isset($_POST['street'])) && (isset($_POST['pickupSuburb'])) &&
+							(isset($_POST['destSuburb'])) && (isset($_POST['date'])) && (isset($_POST['time']))
+							) {
+								$passName = $_POST['pName'];
+								$passPhone = $_POST['pPhone'];
+								$unit = $_POST['unit'];
+								$streetNo = $_POST['streetNo'];
+								$street = $_POST['street'];
+								$pickupSub = $_POST['pickupSuburb'];
+								$destSuburb = $_POST['destSuburb'];
+								$pickupDate = $_POST['date'];
+								$pickupTime = $_POST['time'];
+					
+								$customer = $_SESSION['customer'];
+								$customerEmailId = $customer['email'];
+								$customerName = $customer['name'];
+								
+								$this->processBooking($passName, $passPhone, $unit, $streetNo, $street, $pickupSub, $pickupDate, $pickupTime, $destSuburb, $customerEmailId, $customerName);
+					}
+					break;
+				default:
+					break;
+			}
+		}
+		
 		require "template.php";
 	}
 	
@@ -69,6 +110,7 @@ class Controller {
 		$content = "confirmation.php";
 		$heading = "Booking Confirmed";
 		$pageTitle = "Booking confirmed - CabsOnline";
+		
 		require "template.php";
 	}
 	
@@ -97,6 +139,11 @@ class Controller {
 		}
 		
 		require 'template.php';
+	}
+	
+	public function logout() {
+		session_destroy();
+		header('location:login');
 	}
 	
 	//TODO: break down the validation errors more
@@ -136,6 +183,27 @@ class Controller {
 		}
 	}
 	
+	private function processBooking($passName, $passPhone, $unit, $streetNo, $street, $pickupSub, $pickupDate, $pickupTime, $destSuburb, $customerEmailId, $customerName) {						
+			if ($this->validator->bookingFormIsValid($passName, $passPhone, $destSuburb, $pickupDate, $pickupTime, $unit, $streetNo, $street, $pickupSub)) {
+				
+				if ($this->validator->isTimeInFuture($pickupDate, $pickupTime)) {
+					$bookingID = $this->bookingFactory->insertNewBooking($customerEmailId, $passName, $passPhone, $destSuburb, $pickupDate, $pickupTime, $unit, $streetNo, $street, $pickupSub);
+					if ($bookingID !== false) {
+						$_SESSION['bookingID'] = $bookingID;
+						$_SESSION['pickupTime'] = $pickupTime;
+						$_SESSION['pickupDate'] = $pickupDate;
+						$this->bookingFactory->sendConfirmMail($customerEmailId, $customerName, $bookingID, $pickupDate, $pickupTime);
+						header("location:confirmation");
+					} else {
+						$_SESSION['error'] = "(Booking didn't work) Sorry! Something went wrong";
+					}
+				} else {
+					$_SESSION['error'] = "The pick up time must be at least 1 hour away";
+				}
+			} else {
+				//Message displayed already
+			}
+	}
 	private function adminUpdateBooking($refNumber){	
 		if ($this->validator->isValidNumber($refNumber)) {
 		

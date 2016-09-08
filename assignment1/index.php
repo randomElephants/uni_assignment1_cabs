@@ -34,6 +34,9 @@ if (isset($_SERVER['PATH_INFO'])) {
 		case "/booking":
 			$controller->bookingPage();
 			break;
+		case "/logout":
+			$controller->logout();
+			break;
 		default:
 			header('HTTP/1.1 404 Not Found');
     		$heading = "Page not found";

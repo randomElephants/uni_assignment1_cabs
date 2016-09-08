@@ -4,7 +4,7 @@ class Validator {
 	private $validPhoneNumber = "/[0-9 +()]{8,15}/";
 	private $validPassword = "/.{8,}/";
 	private $validAlpha = "/^[a-zA-Z ]{1,100}$/";
-	private $validNumber = "/^[0-9]*$/";
+	private $validNumber = "/^[0-9]+$/";
 
 public function loginFormIsValid($email, $pw) {
 		$valid = false;
@@ -30,30 +30,44 @@ public function registrationFormIsValid($email, $name, $phone, $password, $confi
 }
 
 //TODO: how should address be formatted?
+//TODO: entirely in progress!!
 public function bookingFormIsValid($passName, $passPhone, $destSub, $pickupDate, $pickupTime, 
 								$unitNo, $streetNo, $streetName, $pickupSub) {
 	
-	$valid = false;
+	$errors = array();
 	
-	$valid = $this->isValidName($passName);
-	if (!$valid) {
-		die ("Name not valid");
+	if (!$this->isValidName($passName)) {
+		$errors[] = "passenger name";
 	}
 	
-	$valid = $this->isValidPhone($passPhone);
-	if (!$valid) {
-		die ("Phone not valid");
+	if (!$this->isValidPhone($passPhone)) {
+		$errors[] = "passenger phone";
 	}
 	
-// 	$valid = ($this->isValidName($passName) && $this->isValidPhone($passPhone) && 
-// 				$this->isValidAlpha($destSub) && $this->isValidAlpha($pickupSub) &&
-// 				$this->isValidPickupDatetime($pickupDate, $pickupSub) && 
-// 				($this->isValidNumber($unitNo) || ($unitNo === NULL) || ($unitNo === "")) &&
-// 				$this->isValidNumber($streetNo) && $this->isValidAlpha($streetName));
+	if (!$this->isValidAlpha($destSub)) {
+		$errors[] = "destination suburb";
+	}
 	
-	//TODO: check this, make work!
-	return $valid;
+	if ((!$this->isValidAlpha($pickupSub)) || (!$this->isValidNumber($streetNo)) || (!$this->isValidAlpha($streetName))) {
+		$errors[] = "pickup address";
+	}
 	
+	if (!($this->isValidNumber($unitNo)) && ($unitNo !== "")) {
+		$errors[] = "unit number";
+	}
+
+	if (!$this->isValidPickupDatetime($pickupDate, $pickupTime)) {
+		$errors[] = "pickup date and time";
+	}
+	
+	
+	
+	if (count($errors) == 0) {
+		return true;
+	} else {
+		$this->formatErrors($errors);
+		return false;
+	}
 }
 
 private	function isValidEmailFormat($email) {
@@ -110,14 +124,37 @@ public function isPasswordConfirmMatch($pw, $confirm) {
 
 //TODO: handling different date formats?
 private function isValidPickupDatetime($pickupDate, $pickupTime) {
+	
+		if (($pickupDate == "") || ($pickupTime == "")) {
+			return false;
+		}
+	
 		date_default_timezone_set("Australia/Melbourne");
 		try {
 			$date = new DateTime($pickupDate . " " . $pickupTime);
-			return $true;		
+			return true;		
 		} catch (Exception $e) {
 			return false;
 		}
 	} 
+	
+public function isTimeInFuture($pickupDate, $pickupTime) {
+		date_default_timezone_set("Australia/Melbourne");
+		try {
+			$dateTime = new DateTime($pickupDate . " " . $pickupTime);
+			$oneHourAway = new DateTime();
+			$oneHourAway->add(new DateInterval('PT1H'));
+			
+			if ($dateTime < $oneHourAway) {
+				return false;
+			} else {
+				return true;
+			}
+			
+		} catch (Exception $e) {
+			return false;
+		}
+	}
 	
 public function isValidNumber($num) {
 	if (preg_match($this->validNumber, $num)) {
@@ -126,5 +163,18 @@ public function isValidNumber($num) {
 		return false;
 	}	
 }
-}
 
+
+private function formatErrors(Array $errors) {
+	$error = "Please check the value you entered for the ";
+ 	$first = true;
+	foreach ($errors as $er) {
+		if (!$first) {
+ 			$error = $error . ", ";
+ 		}
+ 		$error = $error . $er;
+ 		$first = false;
+ 	}
+	$_SESSION['error'] = $error;
+}
+}
