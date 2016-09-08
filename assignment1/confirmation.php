@@ -1,6 +1,5 @@
 <?php 
 	require_once 'Customer.php';
-	session_start();
 		
 	if (isset($_SESSION['customer'])) {
 		$customer = $_SESSION['customer'];

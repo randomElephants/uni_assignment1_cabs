@@ -10,12 +10,21 @@
 	<body>
 		<h1><?php echo $heading ?></h1>
 		<?php
-		if (isset($_SESSION['error'])) {
+		//Check if there is an error to display
+		if (!empty($_SESSION['error'])) {
 			$errorMessage = $_SESSION['error'];
-			echo "<p style='color:red'>$errorMessage</p>";
+			$_SESSION['error'] = false;
+		} else {
+			//Reset the error
+			$errorMessage = "";
 		}
-		?>
-		<?php 
+		
+		//Display the error message
+		//I would not usually use in-line style, but there's no CSS for this assignment
+ 		if (!empty($errorMessage)) {
+ 			echo "<p style='color:red'>$errorMessage</p>";
+ 		}
+ 		
 		if ($content !== null) {
 			require $content;
 		} else {

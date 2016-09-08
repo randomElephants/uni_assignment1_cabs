@@ -1,28 +1,30 @@
-<?php 
-	require_once 'MySQLDatabase.php';
-	require_once 'MySQLResult.php';
-	require_once 'settings.php';
+<h2>1.Click button below to search for all unassigned booking requests with a pick-up time within 2 hours</h2>
 	
-	$db = new MySQLDatabase($databaseHost, $databaseUsername, $databasePassword, $databaseName);
-	
-	if (isset($_GET['bookingResultSet'])) {
-		$bookingResultSet = $_SESSION['bookingResultSet'];
-	} else {
-		$bookingResultSet = $db->listAllBookings();
-	}
-?>
-	<h2>1.Click button below to search for all unassigned booking requests with a pick-up time within 2 hours</h2>
-	
-	<form method="get" action="">
-		<input type="submit" value="List all"/>
+	<form method="post" action="admin?list-all">
+		<p>
+			<input type="submit" value="List all"/>
+		</p>
 	</form>
+	
+	<?php 
+		if (isset($result)) {
+			$result->printResultsTable();
+		}
+	?>
 	
 	<h2>Input a reference number below and click "update" button to assign a taxi to that request</h2>
 	
-	<form>
+	<form method="post" action="admin?update">
 		<p>
 			<label for="refNumber">Reference number:</label>
 			<input type="text" id="refNumber" name="refNumber"/>
 			<input type="submit" value="update"/>
 		</p>
 	</form>
+	
+	<?php 
+		if (isset($updateResult) && isset($refNumber)) {
+			echo "<p>The booking request $refNumber has been properly assigned.";
+			$updateResult->printResultsTable();
+		}
+	?>

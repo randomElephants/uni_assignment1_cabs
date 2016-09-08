@@ -31,6 +31,32 @@ class MySQLResult {
 		}
 	}
 	
+	public function printResultsTable() {
+		$numFields = $this->numFields;
+		
+		echo "<table border='1'>";
+		echo "<thead><tr>";
+		foreach ($this->getFieldNames() as $field) {
+			echo "<th>$field</th>";
+		}
+		echo "</tr></thead>";
+		echo "<tbody>";
+		
+		if ($this->getRowCount() < 1) {
+			echo "<tr><td colspan='$numFields'>No results found</td></tr>";
+		} else {
+			foreach ($this->getRows() as $row) {
+				echo "<tr>";
+				foreach ($row as $field) {
+					echo "<td>$field</td>";
+				}
+				echo "</tr>";
+			}
+		}
+		echo "</tbody>";
+		echo "</table>";
+	}
+	
 	public function getFieldNames() {
 		return $this->fieldNames;
 	}

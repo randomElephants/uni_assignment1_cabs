@@ -4,7 +4,7 @@ class Validator {
 	private $validPhoneNumber = "/[0-9 +()]{8,15}/";
 	private $validPassword = "/.{8,}/";
 	private $validAlpha = "/^[a-zA-Z ]{1,100}$/";
-	private $validNumber = "/^[0-9]{1,7}$/";
+	private $validNumber = "/^[0-9]*$/";
 
 public function loginFormIsValid($email, $pw) {
 		$valid = false;
@@ -119,7 +119,7 @@ private function isValidPickupDatetime($pickupDate, $pickupTime) {
 		}
 	} 
 	
-private function isValidNumber($num) {
+public function isValidNumber($num) {
 	if (preg_match($this->validNumber, $num)) {
 		return true;
 	} else {

@@ -6,37 +6,33 @@ require_once 'CustomerFactory.php';
 require_once 'Customer.php';
 require_once 'BookingFactory.php';
 require_once 'Validator.php';
+require_once 'controller.php';
+require_once 'settings.php';
 
 session_start();
+
+$db = new MySQLDatabase($databaseHost, $databaseUsername, $databasePassword, $databaseName);
+$validator = new Validator();
+$controller = new Controller($db, $validator);
 
 if (isset($_SERVER['PATH_INFO'])) {
 	$pageRequested = $_SERVER['PATH_INFO'];
 		
 	switch ($pageRequested){
 		case "/login":
-			$content = "login.php";
-			$heading = "Login to CabsOnline";
-			$pageTitle = "Login to CabsOnline";
+			$controller->loginPage();
 			break;
 		case "/register":
-			$content = "register.php";
-			$heading = "Register at CabsOnline";
-			$pageTitle = "Register at CabsOnline";
+			$controller->registerPage();
 			break;
 		case "/admin":
-			$content = "admin.php";
-			$heading = "Cabs Online - Admin";
-			$pageTitle = "Admin page - CabsOnline";
+			$controller->adminPage();
 			break;
-		case "/confirm":
-			$content = "confirmation.php";
-			$heading = "Booking Confirmed";
-			$pageTitle = "Booking confirmed - CabsOnline";
+		case "/confirmation":
+			$controller->confirmationPage();
 			break;
 		case "/booking":
-			$content = "booking.php";
-			$heading = "Booking a cab";
-			$pageTitle = "Book with CabsOnline";
+			$controller->bookingPage();
 			break;
 		case "/process":
 			if (isset($_SERVER['QUERY_STRING'])) {
@@ -60,11 +56,11 @@ if (isset($_SERVER['PATH_INFO'])) {
     		$heading = "Page not found";
 			$content = null;
 			$pageTitle = "Page not found - CabsOnline";
+			require "template.php";
 	}
-	//Actual display here
-	require "template.php";	
 } else {
 	//Default to showing the login page
 	header("location:index.php/login");
 }
+
 

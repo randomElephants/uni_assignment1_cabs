@@ -36,7 +36,7 @@ class MySQLDatabase {
 	
 	//TODO: Error checking 
 	function listAllBookings() {
-		$stmt = $this->mysqli->prepare("SELECT b.reference_number, c.name, b.passenger_name, b.passenger_phone, b.unit_number, b.street_number, b.street_name, b.pickup_suburb, b.dest_suburb, b.pickup_datetime FROM cabsCustomer c INNER JOIN cabsBooking b ON c.email_address = b.customer WHERE (b.status = 'UNASSIGNED') AND (b.pickup_datetime <= (now()+ INTERVAL 2 HOUR)) AND (b.pickup_datetime >= now())");
+		$stmt = $this->mysqli->prepare("SELECT b.reference_number AS 'Reference #', c.name AS 'Customer Name', b.passenger_name AS 'Passenger Name', b.passenger_phone AS 'Passenger Phone', CONCAT(IFNULL(b.unit_number, '-'), '/', b.street_number, ' ', b.street_name, ', ', b.pickup_suburb) AS 'Pickup Address', b.dest_suburb AS 'Destination Suburb', b.pickup_datetime AS 'Pickup Time' FROM cabsCustomer c INNER JOIN cabsBooking b ON c.email_address = b.customer WHERE (b.status = 'UNASSIGNED') AND (b.pickup_datetime <= DATE_ADD(NOW(), INTERVAL 2 HOUR)) AND (b.pickup_datetime >= now())");
 		
 		if ($stmt) {
 			$stmt->execute();
@@ -46,6 +46,35 @@ class MySQLDatabase {
 		}
  		
 	}
+	
+	function getBooking($refNumber) {
+		$stmt = $this->mysqli->prepare("SELECT reference_number, passenger_name, status, pickup_datetime FROM cabsBooking WHERE reference_number = ?");	
+		
+		if ($stmt){
+			if ($stmt->bind_param('i', $refNumber)) {
+				$stmt->execute();
+				return ($this->getResult($stmt));
+			} else {
+				die("Couldn't bind params, getBooking");
+			}
+		} else {
+			die ("Couldn't prepare stmt, getBooking");
+		}
+	}
+	
+	function assignBooking ($refNumber) {
+		$stmt = $this->mysqli->prepare("UPDATE cabsBooking SET status='ASSIGNED' WHERE reference_number = ?");
+		
+		if ($stmt){
+			if ($stmt->bind_param('i', $refNumber)) {
+				$stmt->execute();
+			} else {
+				die("Couldn't bind params, assignBooking");
+			}
+		} else {
+			die ("Couldn't prepare stmt, assignBooking");
+		}
+	}
 
 	function insertNewBooking($email, $passName, $passPhone, $destSub, $pickupDatetime, 
 								$unitNo, $streetNo, $streetName, $pickupSub) {
@@ -53,6 +82,9 @@ class MySQLDatabase {
 		$stmt = $this->mysqli->prepare("INSERT INTO cabsBooking (customer, passenger_name, passenger_phone, dest_suburb, pickup_datetime, unit_number, street_number, street_name, pickup_suburb) VALUES (?,?,?,?,?,?,?,?,?)");
 		if ($stmt) {
 			$insertDatetime = $pickupDatetime->format("Y-m-d H-i-s");
+			if ($unitNo == "") {
+				$unitNo = NULL;
+			}
 			if ($stmt->bind_param('sssssssss', $email, $passName, $passPhone, $destSub, $insertDatetime, 
 											$unitNo, $streetNo, $streetName, $pickupSub)) {
 				$stmt->execute();
@@ -122,8 +154,12 @@ class MySQLDatabase {
 		
 		$stmt->execute();
 		$result = new MySQLResult($stmt);	
+
+		$test = $result->getRowCount();
 		
 		return $result;
+		
+		
 	}
 //Bracket to close class
 }
